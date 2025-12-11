@@ -26,7 +26,6 @@ module.exports = {
       supplier_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {model: 'Supplier', key: 'id'},
       },
       created_at: {
         allowNull: false,

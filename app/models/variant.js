@@ -29,7 +29,7 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
     },
     price: {
-      type: DataTypes.DECIMAL(10, 10),
+      type: DataTypes.DECIMAL,
       allowNull: false,
     },
     currency: {

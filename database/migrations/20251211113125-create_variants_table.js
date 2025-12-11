@@ -24,7 +24,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       price: {
-        type: Sequelize.DECIMAL(10, 10),
+        type: Sequelize.DECIMAL,
         allowNull: false,
       },
       currency: {
@@ -42,7 +42,6 @@ module.exports = {
       product_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {model: 'Product', key: 'id'},
       },
       created_at: {
         allowNull: false,
