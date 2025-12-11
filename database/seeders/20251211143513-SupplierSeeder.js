@@ -1,7 +1,7 @@
 'use strict';
 
 const {faker} = require('@faker-js/faker');
-const timestamp = new Date();
+const timestamp = new Date().toLocaleString("en-GB");
 
 function fakeSupplier() {
   return {
@@ -20,7 +20,7 @@ module.exports = {
     /**
      * Add seed commands here.
      */
-    let suppliers = faker.helpers.multiple(fakeSupplier, {count: 3});
+    let suppliers = faker.helpers.multiple(fakeSupplier, {count: 30});
     await queryInterface.bulkInsert('suppliers', suppliers);
   },
 

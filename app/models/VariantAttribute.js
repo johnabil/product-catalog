@@ -35,9 +35,7 @@ module.exports = (sequelize) => {
     sequelize,
     modelName: 'VariantAttribute',
     tableName: 'variants_attributes',
-    timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: 'updated_at',
+    timestamps: false
   });
 
   return VariantAttribute;

@@ -1,7 +1,7 @@
 'use strict';
 
 const {faker} = require('@faker-js/faker');
-const timestamp = new Date();
+const timestamp = new Date().toLocaleString("en-GB");
 
 function fakeVariants(product_ids) {
   return {
@@ -26,7 +26,7 @@ module.exports = {
        FROM "products";`,
       {type: Sequelize.QueryTypes.SELECT}
     );
-    let variants = faker.helpers.multiple(() => fakeVariants(product_ids), {count: 100});
+    let variants = faker.helpers.multiple(() => fakeVariants(product_ids), {count: 20000});
     await queryInterface.bulkInsert('variants', variants);
   },
 

@@ -1,7 +1,7 @@
 'use strict';
 
 const {faker} = require('@faker-js/faker');
-const timestamp = new Date();
+const timestamp = new Date().toLocaleString("en-GB");
 
 function fakeProducts(supplier_ids) {
   const supplier_id = faker.helpers.arrayElement(supplier_ids);
@@ -31,7 +31,7 @@ module.exports = {
        FROM "suppliers";`,
       {type: Sequelize.QueryTypes.SELECT}
     );
-    let products = faker.helpers.multiple(() => fakeProducts(supplier_ids), {count: 20});
+    let products = faker.helpers.multiple(() => fakeProducts(supplier_ids), {count: 500});
     await queryInterface.bulkInsert('products', products);
 
     //inject product ids and category ids into products_categories

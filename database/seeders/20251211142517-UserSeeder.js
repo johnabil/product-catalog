@@ -1,7 +1,7 @@
 'use strict';
 
 const {faker} = require('@faker-js/faker');
-const timestamp = new Date();
+const timestamp = new Date().toLocaleString("en-GB");
 
 function fakeUser() {
   return {
@@ -19,7 +19,7 @@ module.exports = {
     /**
      * Add seed commands here.
      */
-    let users = faker.helpers.multiple(fakeUser, {count: 100});
+    let users = faker.helpers.multiple(fakeUser, {count: 1000});
     await queryInterface.bulkInsert('users', users);
   },
 
