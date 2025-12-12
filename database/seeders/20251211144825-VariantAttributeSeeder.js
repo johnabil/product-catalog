@@ -3,6 +3,7 @@
 const {faker} = require('@faker-js/faker');
 const db = require("../../app/models/index");
 const {meilisearch, syncAttributes} = require("../../config/meilisearch");
+const {publishMessage} = require("../../app/services/Rabbitmq");
 
 function fakeAttributes(variant_ids) {
   const types = ['Material', 'Made by'];
@@ -53,15 +54,19 @@ module.exports = {
     let documents = [];
     const index = meilisearch.index('variants');
     variants.forEach(variant => documents.push(variant.get({plain: true})));
-    await index.addDocuments(documents).waitTask();
-    await syncAttributes(index, ['quantity_sold'], [
-      "words",
-      "typo",
-      "proximity",
-      "attribute",
-      "sort",
-      "exactness",
-    ]);
+    await publishMessage({
+      event: 'VariantsCreated',
+      documents: documents,
+      sortableAttributes: ['quantity_sold'],
+      rankingRules: [
+        "words",
+        "typo",
+        "proximity",
+        "attribute",
+        "sort",
+        "exactness",
+      ]
+    }, 'products_exchange');
   },
 
   async down(queryInterface, Sequelize) {
@@ -69,6 +74,6 @@ module.exports = {
      * Add commands to revert seed here.
      */
     await queryInterface.bulkDelete('variants_attributes', null);
-    await meilisearch.index('variants').deleteAllDocuments().waitTask();
+    await publishMessage({event: 'AllVariantsDeleted'}, 'products_exchange');
   }
 };

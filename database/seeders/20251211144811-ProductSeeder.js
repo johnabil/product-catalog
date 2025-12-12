@@ -46,11 +46,12 @@ module.exports = {
       {type: Sequelize.QueryTypes.SELECT}
     );
     let products_categories = faker.helpers.multiple(() =>
-      fakeProductCategories(product_ids, category_ids), {count: 30});
+      fakeProductCategories(product_ids, category_ids), {count: 1000});
     await queryInterface.bulkInsert('products_categories', products_categories);
   },
 
   async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete('products', null);
+    await queryInterface.bulkDelete('products_categories', null);
   }
 };

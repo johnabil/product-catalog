@@ -6,7 +6,9 @@ const timestamp = new Date().toLocaleString("en-GB");
 function fakeUser() {
   return {
     name: faker.internet.displayName(),
-    email: faker.internet.email(),
+    email: faker.internet.email({
+      allowSpecialCharacters: true
+    }),
     password: '123456',
     created_at: timestamp,
     updated_at: timestamp

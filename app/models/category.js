@@ -8,7 +8,11 @@ const {
 module.exports = (sequelize) => {
   class Category extends Model {
     static associate(models) {
-      Category.belongsToMany(models.Product, {through: 'products_categories', foreignKey: 'category_id'});
+      Category.belongsToMany(models.Product, {
+        through: 'products_categories',
+        foreignKey: 'category_id',
+        timestamps: false
+      });
     }
   }
 
