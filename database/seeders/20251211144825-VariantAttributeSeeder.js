@@ -6,14 +6,14 @@ const {meilisearch, syncAttributes} = require("../../config/meilisearch");
 const {publishMessage} = require("../../app/services/Rabbitmq");
 
 function fakeAttributes(variant_ids) {
-  const types = ['Material', 'Made by'];
+  const types = ['Material', 'Specification'];
   let type = faker.helpers.arrayElement(types);
   let value;
   switch (type) {
     case 'Material':
       value = faker.commerce.productMaterial();
       break;
-    case 'Made by':
+    case 'Specification':
       value = faker.commerce.productAdjective();
       break;
     default:
@@ -37,8 +37,9 @@ module.exports = {
     let variantsAttributes = faker.helpers.multiple(() => fakeAttributes(variant_ids), {count: 20000});
     await queryInterface.bulkInsert('variants_attributes', variantsAttributes);
 
+    const variant_columns = ['id', 'name', 'description', 'quantity_sold', 'price', 'quantity'];
     let variants = await db.sequelize.models.Variant.findAll({
-      attributes: ['id', 'name', 'description', 'quantity_sold'],
+      attributes: variant_columns,
       include: [
         {
           model: db.sequelize.models.Product,
@@ -58,13 +59,32 @@ module.exports = {
         }
       ]
     });
-    let documents = [];
-    variants.forEach(variant => documents.push(variant.get({plain: true})));
+    let documents = variants.map(variant => {
+      const product = {
+        name: variant.product.name,
+        description: variant.product.description,
+        categories: variant.product?.categories.map(category => category.name),
+      };
+      return {
+        id: variant.id,
+        name: variant.name,
+        description: variant.description,
+        price: variant.price,
+        quantity: variant.quantity,
+        quantity_sold: variant.quantity_sold,
+        product: product,
+
+        attributes: variant.attributes?.reduce((acc, attribute) => {
+          acc[attribute.name] = attribute.value;
+          return acc;
+        }, {}),
+      }
+    });
     await publishMessage({
       event: 'VariantsCreated',
       documents: documents,
       sortableAttributes: ['quantity_sold'],
-      filterableAttributes: ['categories', 'attributes'],
+      filterableAttributes: ['product.categories', 'attributes', 'price', 'quantity'],
       rankingRules: [
         "words",
         "typo",

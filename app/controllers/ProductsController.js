@@ -13,7 +13,12 @@ async function search(Request, Response) {
   let results = await meilisearchClient.index('variants').search(query, {
     page: page,
     hitsPerPage: perPage,
-    sort: ['quantity_sold:desc']
+    sort: ['quantity_sold:desc'],
+    filter: `product.categories = "${Request.query?.category}" 
+    OR attributes.Material = "${Request.query?.material}" 
+    OR attributes.Specification = "${Request.query?.specification}" 
+    OR price = ${Request.query?.price} 
+    OR quantity = ${Request.query?.quantity}`
   });
 
   return Response.json({
