@@ -13,7 +13,8 @@ module.exports = (sequelize) => {
       Product.belongsToMany(models.Category, {
         through: 'products_categories',
         foreignKey: 'product_id',
-        timestamps: false
+        timestamps: false,
+        as: 'categories'
       });
     }
   }

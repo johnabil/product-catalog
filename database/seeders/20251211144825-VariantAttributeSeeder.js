@@ -42,22 +42,29 @@ module.exports = {
       include: [
         {
           model: db.sequelize.models.Product,
+          as: 'product',
           attributes: ['name', 'description'],
-          include: [{model: db.sequelize.models.Category, attributes: ['name'], through: {'attributes': []}}]
+          include: [{
+            model: db.sequelize.models.Category,
+            as: 'categories',
+            attributes: ['name'],
+            through: {'attributes': []}
+          }]
         },
         {
           model: db.sequelize.models.VariantAttribute,
+          as: 'attributes',
           attributes: ['name', 'value']
         }
       ]
     });
     let documents = [];
-    const index = meilisearch.index('variants');
     variants.forEach(variant => documents.push(variant.get({plain: true})));
     await publishMessage({
       event: 'VariantsCreated',
       documents: documents,
       sortableAttributes: ['quantity_sold'],
+      filterableAttributes: ['categories', 'attributes'],
       rankingRules: [
         "words",
         "typo",

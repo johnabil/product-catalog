@@ -8,7 +8,7 @@ const {
 module.exports = (sequelize) => {
   class VariantAttribute extends Model {
     static associate(models) {
-      VariantAttribute.belongsTo(models.Variant, {foreignKey: 'variant_id'});
+      VariantAttribute.belongsTo(models.Variant, {foreignKey: 'variant_id', as: 'variant'});
     }
   }
 

@@ -23,12 +23,12 @@ Rabbitmq.connect(process.env.RABBITMQ_HOST, function (connectionErr, connection)
         case 'VariantsCreated':
           index = meilisearch.index('variants');
           await index.addDocuments(data.documents).waitTask();
-          await syncAttributes(index, data.sortableAttributes, data.rankingRules);
+          await syncAttributes(index, data.sortableAttributes, data.rankingRules, data.filterableAttributes);
           break;
         case 'VariantsUpdated':
           index = meilisearch.index('variants');
           await index.updateDocuments(data.documents).waitTask();
-          await syncAttributes(index, data.sortableAttributes, data.rankingRules);
+          await syncAttributes(index, data.sortableAttributes, data.rankingRules, data.filterableAttributes);
           break;
         case 'VariantsDeleted':
           index = meilisearch.index('variants');
