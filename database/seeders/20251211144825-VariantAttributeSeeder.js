@@ -2,7 +2,6 @@
 
 const {faker} = require('@faker-js/faker');
 const db = require("../../app/models/index");
-const {meilisearch, syncAttributes} = require("../../config/meilisearch");
 const {publishMessage} = require("../../app/services/Rabbitmq");
 
 function fakeAttributes(variant_ids) {
@@ -84,7 +83,7 @@ module.exports = {
       event: 'VariantsCreated',
       documents: documents,
       sortableAttributes: ['quantity_sold'],
-      filterableAttributes: ['product.categories', 'attributes', 'price', 'quantity'],
+      filterableAttributes: ['product.categories', 'attributes', 'quantity'],
       rankingRules: [
         "words",
         "typo",

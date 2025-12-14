@@ -1,7 +1,7 @@
 const {Meilisearch} = require("meilisearch");
 const meilisearch = new Meilisearch({
   host: process.env.MEILISEARCH_URL,
-  enqueued: false
+  apiKey: process.env.MEILISEARCH_KEY,
 });
 
 async function syncAttributes(index, sortableAttributes = [], rankingRules = [], filterableAttributes = []) {

@@ -1,0 +1,87 @@
+services:
+  express:
+    build: .
+    container_name: product_catalog
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      meilisearch:
+        condition: service_healthy
+    ports:
+      - "${PORT:-8000}:8000"
+    environment:
+      APP_ENV: ${APP_ENV}
+      PORT: ${PORT:-8000}
+      DB_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+      RABBITMQ_HOST: amqp://${RABBITMQ_USER}:${RABBITMQ_PASSWORD}@rabbitmq:5672
+      MEILISEARCH_URL: http://meilisearch:7700
+      MEILISEARCH_KEY: ${MEILISEARCH_KEY}
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    networks:
+      - local_gateway
+    command: npm start
+  db:
+    image: postgres:17-alpine
+    container_name: product_catalog_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER:-app_user}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - local_gateway
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: product_catalog_rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    ports:
+      - "5672:5672"    # AMQP
+      - "15672:15672"  # Management UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
+      interval: 20s
+      timeout: 3s
+      retries: 20
+    networks:
+      - local_gateway
+  meilisearch:
+    image: getmeili/meilisearch:latest
+    container_name: product_catalog_ms
+    restart: always
+    environment:
+      MEILI_MASTER_KEY: ${MEILISEARCH_KEY}
+    ports:
+      - "7701:7700"
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:7700/health || exit 1" ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - local_gateway
+volumes:
+  pgdata:
+  rabbitmq_data:
+networks:
+  local_gateway:
+    driver: bridge
+

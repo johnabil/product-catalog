@@ -16,6 +16,8 @@ app.set('db', db);
 app.set('meiliSearchClient', meiliSearchClient);
 
 //running event processing job
+require('./app/services/Rabbitmq').initializeRabbitmq().then(result => {
+});
 require('./app/jobs/EventsProcessing');
 
 app.use(logger('dev'));

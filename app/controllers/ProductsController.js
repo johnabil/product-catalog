@@ -10,15 +10,21 @@ async function search(Request, Response) {
   const query = Request.query.query;
   const page = Number(Request.query.page) || 1;
   const perPage = Number(Request.query.perPage) || 20;
+  const category = Request.query.category;
+  const material = Request.query.material;
+  const specification = Request.query.specification;
+  const quantity = Request.query.quantity;
+  let filters = '';
+  if (category) filters += `product.categories = "${category}" OR `;
+  if (material) filters += `attributes.Material = "${material}" OR `;
+  if (specification) filters += `attributes.Specification = "${specification}" OR `;
+  if (quantity) filters += `quantity = ${quantity}`;
+
   let results = await meilisearchClient.index('variants').search(query, {
     page: page,
     hitsPerPage: perPage,
     sort: ['quantity_sold:desc'],
-    filter: `product.categories = "${Request.query?.category}" 
-    OR attributes.Material = "${Request.query?.material}" 
-    OR attributes.Specification = "${Request.query?.specification}" 
-    OR price = ${Request.query?.price} 
-    OR quantity = ${Request.query?.quantity}`
+    filter: filters
   });
 
   return Response.json({

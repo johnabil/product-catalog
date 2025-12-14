@@ -1,7 +1,7 @@
 'use strict';
 
 const {faker} = require('@faker-js/faker');
-const timestamp = new Date().toLocaleString("en-GB");
+const timestamp = new Date().toISOString();
 
 function fakeProducts(supplier_ids) {
   const supplier_id = faker.helpers.arrayElement(supplier_ids);
