@@ -1,4 +1,5 @@
 .idea/*
+data.ms/*
 # Logs
 logs
 *.log
