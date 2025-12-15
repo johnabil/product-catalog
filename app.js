@@ -15,9 +15,10 @@ const meiliSearchClient = require('./config/meilisearch').meilisearch;
 app.set('db', db);
 app.set('meiliSearchClient', meiliSearchClient);
 
-//running event processing job
+// Initializing RabbitMQ Exchange
 require('./app/services/Rabbitmq').initializeRabbitmq().then(result => {
 });
+// Running Events Processing
 require('./app/jobs/EventsProcessing');
 
 app.use(logger('dev'));

@@ -58,7 +58,7 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
     healthcheck:
       test: [ "CMD", "rabbitmq-diagnostics", "-q", "ping" ]
-      interval: 20s
+      interval: 20s # This is for just making sure RabbitMQ is up before starting the app
       timeout: 3s
       retries: 20
     networks:

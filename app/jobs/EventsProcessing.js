@@ -16,6 +16,7 @@ Rabbitmq.connect(process.env.RABBITMQ_HOST, function (connectionErr, connection)
       durable: true
     });
 
+    // Processing Documents sent to the queue
     channel.consume(queue, async function (msg) {
       const data = JSON.parse(msg.content.toString());
       let index;

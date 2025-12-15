@@ -14,11 +14,12 @@ async function search(Request, Response) {
   const material = Request.query.material;
   const specification = Request.query.specification;
   const quantity = Request.query.quantity;
-  let filters = '';
-  if (category) filters += `product.categories = "${category}" OR `;
-  if (material) filters += `attributes.Material = "${material}" OR `;
-  if (specification) filters += `attributes.Specification = "${specification}" OR `;
-  if (quantity) filters += `quantity = ${quantity}`;
+  let filters = [];
+  if (category) filters.push(`product.categories = "${category}"`);
+  if (material) filters.push(`attributes.Material = "${material}"`);
+  if (specification) filters.push(`attributes.Specification = "${specification}"`);
+  if (quantity) filters.push(`quantity = ${quantity}`);
+  filters = filters.join(' AND ');
 
   let results = await meilisearchClient.index('variants').search(query, {
     page: page,

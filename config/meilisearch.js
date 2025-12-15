@@ -16,4 +16,28 @@ async function syncAttributes(index, sortableAttributes = [], rankingRules = [],
   }
 }
 
-module.exports = {meilisearch, syncAttributes};
+async function formatVariants(variants) {
+  return variants.map(variant => {
+    const product = {
+      name: variant.product.name,
+      description: variant.product.description,
+      categories: variant.product?.categories.map(category => category.name),
+    };
+    return {
+      id: variant.id,
+      name: variant.name,
+      description: variant.description,
+      price: variant.price,
+      quantity: variant.quantity,
+      quantity_sold: variant.quantity_sold,
+      product: product,
+
+      attributes: variant.attributes?.reduce((acc, attribute) => {
+        acc[attribute.name] = attribute.value;
+        return acc;
+      }, {}),
+    }
+  });
+}
+
+module.exports = {meilisearch, syncAttributes, formatVariants};
