@@ -27,27 +27,35 @@ attributes and free text search products and its variants.
 
 ## Running the project
 
-- Make sure you have docker installed. And ``.env`` file exists.
+- Make sure you have docker installed. And ``.env`` file exists,
+  check [Env example](./.env.example) for more details.
 - The default port is 8000 unless changed.
 
 ### Running with Docker:
 
 ``docker compose up --build``
+
 ``docker exec -it <container id or name> sh``
 
 Then:
 These commands must be run in the container.
+
 ``npx sequelize-cli db:migrate``
+
 ``npx sequelize-cli db:seed:all``
 
 ### Running without Docker:
 
 First,
+
 ``npm install``
 
 Then:
+
 ``npm start``
+
 ``npx sequelize-cli db:migrate``
+
 ``npx sequelize-cli db:seed:all``
 
 **Note: There might be some error with unique values in categories
